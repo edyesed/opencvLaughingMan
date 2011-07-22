@@ -1,0 +1,7 @@
+This script builds on the example Haar facial recognition that comes with
+the opencv 2.1 distribution ( at least on ubuntu 11 ).
+
+This overlays an image on the found face, and scales that image according to
+the size of the face. 
+
+
