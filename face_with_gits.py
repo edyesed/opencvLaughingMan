@@ -16,7 +16,7 @@ cascade = None
 storage = cvCreateMemStorage(0)
 cascade_name = "./haarcascade_frontalface_alt.xml"
 input_name = "../c/lena.jpg"
-lm_name = "../gits-lm-withwhite.png"
+lm_name = "./gits-lm-withwhite.png"
 MPEG1VIDEO = 0x314D4950
 
 
