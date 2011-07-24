@@ -15,7 +15,8 @@ from opencv.highgui import *
 cascade = None
 storage = cvCreateMemStorage(0)
 cascade_name = "./haarcascade_frontalface_alt.xml"
-lm_name = "./gits-lm-withwhite.png"
+input_name = "../c/lena.jpg"
+lm_name = "../gits-lm-withwhite.png"
 MPEG1VIDEO = 0x314D4950
 
 
@@ -68,12 +69,25 @@ def detect_and_draw( img ):
                 lman_small = cvCreateImage ( cvSize(int((face_rect.width*image_scale)),int((face_rect.height*image_scale))),
                                              IPL_DEPTH_8U, img.nChannels )
 		cvResize(lman,lman_small)
-                subarea=cvGetSubRect(img, cvRect( int(face_rect.x*image_scale) , int(face_rect.y*image_scale) , int(face_rect.width*image_scale), int(face_rect.height*image_scale)))
+                x_offset=int(face_rect.x*image_scale)
+                y_offset=int(face_rect.y*image_scale)
+                subarea=cvGetSubRect(img, cvRect( x_offset , y_offset, int(face_rect.width*image_scale), int(face_rect.height*image_scale)))
+                smallx = 0
+                for xrange in range(0,lman_small.height):
+                  smally = 0
+                  for yrange in range(0,lman_small.width):
+                    overlaycolor = cvGet2D(lman_small,smallx,smally)
+                    sourcecolor = cvGet2D(img,xrange+y_offset,smally+x_offset)
+                    if ( overlaycolor[0] == 0.0 and overlaycolor[1] == 0.0 and overlaycolor[2] == 0.0 ):
+                      cvSet2D(lman_small,smallx,smally,sourcecolor)
+                      True
+                    smally = smally + 1
+                  smallx = smallx + 1
                 #paste
 		cvCopy(lman_small,subarea)
 
     cvShowImage( "result", img )
-    cvWriteFrame( writer, img )
+#    cvWriteFrame( writer, img )
 
 
 if __name__ == '__main__':
@@ -108,28 +122,28 @@ if __name__ == '__main__':
         capture = cvCreateFileCapture( input_name ) 
 
 ## SNIP OF WRITER
-    # capture the 1st frame to get some propertie on it
-    frame = cvQueryFrame (capture)
-
-    # get size of the frame
-    frame_size = cvGetSize (frame)
-
-    # get the frame rate of the capture device
-    #fps = cvGetCaptureProperty (capture, CV_CAP_PROP_FPS)
-    fps = 0
-    if fps == 0:
-        # no fps getted, so set it to 30 by default
-        fps = 24
-
-    # create the writer
-    writer = cvCreateVideoWriter ("captured.mpg", MPEG1VIDEO,
-                                          fps, frame_size, True)
-
-    # check the writer is OK
-    if not writer:
-        print "Error opening writer"
-        sys.exit (1)
-
+##    # capture the 1st frame to get some propertie on it
+##    frame = cvQueryFrame (capture)
+##
+##    # get size of the frame
+##    frame_size = cvGetSize (frame)
+##
+##    # get the frame rate of the capture device
+##    #fps = cvGetCaptureProperty (capture, CV_CAP_PROP_FPS)
+##    fps = 0
+##    if fps == 0:
+##        # no fps getted, so set it to 30 by default
+##        fps = 24
+##
+##    # create the writer
+##    writer = cvCreateVideoWriter ("captured.mpg", MPEG1VIDEO,
+##                                          fps, frame_size, True)
+##
+##    # check the writer is OK
+##    if not writer:
+##        print "Error opening writer"
+##        sys.exit (1)
+##
 ##/ SNIP OF WRITER
 
     cvNamedWindow( "result", 1 )
